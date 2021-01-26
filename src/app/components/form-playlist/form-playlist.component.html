@@ -1,0 +1,78 @@
+<form [formGroup]="playlistForm" (submit)="onSubmit()">
+  <h2 mat-dialog-title>Create New Playlist</h2>
+  <input type="hidden" formControlName="playlistId" />
+  <div mat-dialog-content>
+    <mat-form-field style="width: 100%">
+      <mat-label>Playlist name *</mat-label>
+      <input matInput formControlName="playlistName" />
+    </mat-form-field>
+
+    <mat-form-field style="width: 100%">
+      <mat-label>Description *</mat-label>
+      <input matInput formControlName="description" />
+    </mat-form-field>
+    <ng-container formArrayName="songs">
+      <div
+        class="row"
+        *ngFor="let _ of playlistForm.get('songs')['controls']; let i = index"
+      >
+        <ng-container [formGroupName]="i">
+          <mat-form-field class="col-md-3">
+            <mat-label>Song title *</mat-label>
+            <input matInput formControlName="title" />
+          </mat-form-field>
+
+          <mat-form-field class="col-md-3">
+            <mat-label>Artist *</mat-label>
+            <input matInput formControlName="artist" />
+          </mat-form-field>
+
+          <mat-form-field class="col-md-3 duration">
+            <mat-label>Duration *</mat-label>
+            <input matInput type="number" formControlName="duration" />
+            <span matSuffix>minutes</span>
+          </mat-form-field>
+
+          <div class="col-md-1">
+            <input type="hidden" formControlName="id" />
+          </div>
+
+          <div class="button-container col-md-2">
+            <button
+              mat-icon-button
+              color="primary"
+              type="button"
+              *ngIf="i + 1 === playlistForm.get('songs')['controls'].length"
+              (click)="addSong()"
+            >
+              <mat-icon>add_circle</mat-icon>
+            </button>
+            <button
+              *ngIf="playlistForm.get('songs')['controls'].length !== 1"
+              mat-icon-button
+              color="warn"
+              type="button"
+              (click)="removeSong(i)"
+            >
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+  <div mat-dialog-actions class="button-actions">
+    <button type="button" mat-raised-button color="warn" (click)="onNoClick()">
+      CANCEL
+    </button>
+    <button
+      type="submit"
+      mat-raised-button
+      color="primary"
+      [mat-dialog-close]="playlist"
+      [disabled]="playlistForm.invalid || !playlistForm.dirty"
+    >
+      {{ getButtonName() }}
+    </button>
+  </div>
+</form>
